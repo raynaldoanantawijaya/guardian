@@ -97,8 +97,13 @@ class SQLMapTool(BaseTool):
             command.extend(["--tamper", tampers])
             
             # 2. Traffic Obfuscation
-            command.append("--chunked")  # Split requests
+            # --chunked ONLY works with POST data
+            has_post_data = "data" in kwargs or "data" in config or "--forms" in kwargs or "--forms" in config
+            if has_post_data:
+                command.append("--chunked")
+            
             command.append("--hpp")      # HTTP Parameter Pollution
+
             
             # 3. Header Spoofing (if not already set)
             if "--random-agent" not in command:
