@@ -17,7 +17,6 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Intended Audience :: Information Technology",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -51,7 +50,7 @@ dev = [
 guardian = "cli.main:app"
 
 [tool.setuptools]
-packages = ["cli", "core", "ai", "tools", "reports", "utils", "workflows"]
+packages = ["cli", "core", "ai", "tools", "utils", "workflows"]
 
 [tool.black]
 line-length = 100
