@@ -83,14 +83,42 @@ class SQLMapTool(BaseTool):
         elif "cookie" in config:
             command.extend(["--cookie", config["cookie"]])
         
-        # Tamper scripts
-        if "tamper" in kwargs:
+        # WAF Bypass Logic
+        if kwargs.get("waf_bypass", False) or config.get("waf_bypass", False):
+            # 1. Advanced Tamper Scripts
+            # Use specific scripts if provided, otherwise use a powerful default set
+            default_tampers = "space2comment,between,randomcase,space2morehash,equaltolike"
+            
+            if kwargs.get("aggressive_bypass", False):
+                # Add risky tampers that might break queries but bypass strong WAFs
+                default_tampers += ",charunicodeencode,percentage"
+            
+            tampers = kwargs.get("tamper", config.get("tamper", default_tampers))
+            command.extend(["--tamper", tampers])
+            
+            # 2. Traffic Obfuscation
+            command.append("--chunked")  # Split requests
+            command.append("--hpp")      # HTTP Parameter Pollution
+            
+            # 3. Header Spoofing (if not already set)
+            if "--random-agent" not in command:
+                command.append("--random-agent")
+            
+            # 4. Stealth & Evasion
+            delay = kwargs.get("delay", config.get("delay", 2))
+            command.extend(["--delay", str(delay)])
+            command.extend(["--timeout", "30"])
+            command.extend(["--retries", "3"])
+            
+        # Tamper scripts (manual override if waf_bypass is off)
+        elif "tamper" in kwargs:
             command.extend(["--tamper", kwargs["tamper"]])
         elif "tamper" in config:
             command.extend(["--tamper", config["tamper"]])
         
-        # Random user agent
-        command.append("--random-agent")
+        # User Agent (ensure it's added if not in WAF bypass)
+        if "--random-agent" not in command:
+            command.append("--random-agent")
         
         return command
     

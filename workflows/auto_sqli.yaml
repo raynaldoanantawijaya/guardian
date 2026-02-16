@@ -1,0 +1,39 @@
+# Automated SQL Injection & WAF Bypass Workflow
+# Scans for SQLi and automatically bypasses WAFs if vuln is found
+
+name: auto_sqli_waf_bypass
+description: Advanced SQLi workflow with auto-escalation and WAF evasion
+
+steps:
+  - name: http_discovery
+    type: tool
+    tool: httpx
+    objective: "Discover active web endpoints"
+    parameters:
+      tech_detect: true
+      status_code: true
+  
+  - name: sqli_scan
+    type: tool
+    tool: nuclei
+    objective: "Scan specifically for SQL injection vulnerabilities"
+    parameters:
+      tags: ["sqli"]
+      severity: ["critical", "high", "medium"]
+  
+  - name: conditional_exploitation
+    type: conditional_tool
+    tool: sqlmap
+    condition_finding: "sqli"  # Trigger only if "sqli" is found in previous steps
+    objective: "Exploit SQLi with WAF Bypass"
+    parameters:
+      waf_bypass: true
+      aggressive_bypass: true  # Enable aggressive tampers
+      level: 5
+      risk: 3
+      batch: true
+      threads: 4
+
+settings:
+  max_parallel_tools: 1
+  require_confirmation: false  # Auto-pilot mode

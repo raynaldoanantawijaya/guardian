@@ -240,6 +240,27 @@ class WorkflowEngine:
             
             self.logger.info(f"Report saved to: {report_file}")
         
+        elif step_type == "conditional_tool":
+            # Execute tool ONLY if specific findings exist
+            condition = step.get("condition_finding", "").lower()
+            should_run = False
+            
+            # Check if any finding matches the condition
+            for finding in self.memory.findings:
+                if condition in finding.title.lower() or condition in finding.description.lower():
+                    should_run = True
+                    self.logger.info(f"Condition met: Found '{condition}' in findings. Triggering {step['tool']}")
+                    break
+            
+            if should_run:
+                # Execute as a normal tool step
+                # (Reuse the tool execution logic by recursively calling _execute_step with type='tool')
+                tool_step = step.copy()
+                tool_step["type"] = "tool"
+                await self._execute_step(tool_step)
+            else:
+                self.logger.info(f"Condition not met: No findings matching '{condition}'. Skipping {step['tool']}")
+
         self.memory.mark_action_complete(step["name"])
     
     async def _execute_ai_decision(self, decision: Dict[str, Any]):
