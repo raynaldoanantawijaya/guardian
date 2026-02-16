@@ -1,0 +1,22 @@
+# Forced SQL Injection & WAF Bypass Workflow
+# Executes SQLMap directly without pre-checks (Aggressive Mode)
+
+name: force_sqli_waf_bypass
+description: Forcefully run SQLMap with WAF bypass (skips Nuclei check)
+
+steps:
+  - name: aggressive_sqli
+    type: tool
+    tool: sqlmap
+    objective: "Direct SQLi Attack with WAF Bypass"
+    parameters:
+      waf_bypass: true
+      aggressive_bypass: true
+      level: 5
+      risk: 3
+      batch: true
+      threads: 4
+
+settings:
+  max_parallel_tools: 1
+  require_confirmation: false
