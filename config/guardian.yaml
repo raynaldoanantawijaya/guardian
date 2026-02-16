@@ -24,7 +24,7 @@ ai:
   # OpenRouter Configuration
   openrouter:
     model: google/gemini-2.0-flash-001
-    api_key: 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  # Or set OPENROUTER_API_KEY environment variable
+    api_key: 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  # Or set OPENROUTER_API_KEY environment variable
   
   # General AI Settings (applied to all providers)
   temperature: 0.2
