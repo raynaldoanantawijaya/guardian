@@ -16,6 +16,10 @@ steps:
       risk: 3
       batch: true
       threads: 4
+      forms: true
+      crawl: 2
+      smart: true
+
 
 settings:
   max_parallel_tools: 1

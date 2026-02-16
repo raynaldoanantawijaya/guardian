@@ -82,6 +82,19 @@ class SQLMapTool(BaseTool):
             command.extend(["--cookie", kwargs["cookie"]])
         elif "cookie" in config:
             command.extend(["--cookie", config["cookie"]])
+
+        # Forms (Auto-detect forms)
+        if kwargs.get("forms", config.get("forms", False)):
+            command.append("--forms")
+            
+        # Crawl (Spidering)
+        crawl = kwargs.get("crawl", config.get("crawl", 0))
+        if crawl:
+            command.extend(["--crawl", str(crawl)])
+            
+        # Smart (Only test positive heuristics)
+        if kwargs.get("smart", config.get("smart", False)):
+            command.append("--smart")
         
         # WAF Bypass Logic
         if kwargs.get("waf_bypass", False) or config.get("waf_bypass", False):
