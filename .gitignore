@@ -25,3 +25,12 @@ brain/
 guardian.egg-info/
 build/
 dist/
+
+# Local Logs & Reports
+fuzz_report.txt
+waf_log.txt
+waf_advanced_log.txt
+waf_test_report.txt
+verification_report.txt
+*_report.txt
+*_log.txt
