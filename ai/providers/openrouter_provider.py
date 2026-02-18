@@ -27,8 +27,13 @@ class OpenRouterProvider(BaseProvider):
         openrouter_config = ai_config.get("openrouter", {})
         
         self.model_name = openrouter_config.get("model", "anthropic/claude-3.5-sonnet")
-        # Prefer config file over environment variable
-        self.api_key = openrouter_config.get("api_key") or os.environ.get("OPENROUTER_API_KEY")
+        # Prefer environment variable over config file
+        self.api_key = os.environ.get("OPENROUTER_API_KEY") or openrouter_config.get("api_key")
+        
+        if self.api_key:
+            masked = f"{self.api_key[:10]}...{self.api_key[-4:]}" if len(self.api_key) > 10 else "***"
+            logger.info(f"Using OpenRouter API Key: {masked}")
+            
         self.temperature = ai_config.get("temperature", 0.2)
         self.max_tokens = ai_config.get("max_tokens", 8000)
         
